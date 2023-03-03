@@ -1,0 +1,636 @@
+[root@BigData01 ~]# tiup cluster display tidb_lsy
+tiup is checking updates for component cluster ...
+A new version of cluster is available:
+   The latest version:         v1.11.1
+   Local installed version:    v1.9.1
+   Update current component:   tiup update cluster
+   Update all components:      tiup update --all
+
+Starting component `cluster`: /root/.tiup/components/cluster/v1.9.1/tiup-cluster /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+Cluster type:       tidb
+Cluster name:       tidb_lsy
+Cluster version:    v5.4.0
+Deploy user:        tidb
+SSH type:           builtin
+Dashboard URL:      http://192.168.93.128:2379/dashboard
+ID                    Role        Host            Ports                            OS/Arch       Status   Data Dir                    Deploy Dir
+--                    ----        ----            -----                            -------       ------   --------                    ----------
+192.168.93.128:8300   cdc         192.168.93.128  8300                             linux/x86_64  Up       /tidb-data/cdc-8300         /tidb-deploy/cdc-8300
+192.168.93.128:3000   grafana     192.168.93.128  3000                             linux/x86_64  Up       -                           /tidb-deploy/grafana-3000
+192.168.93.128:2379   pd          192.168.93.128  2379/2380                        linux/x86_64  Up|L|UI  /tidb-data/pd-2379          /tidb-deploy/pd-2379
+192.168.93.128:9090   prometheus  192.168.93.128  9090/12020                       linux/x86_64  Up       /tidb-data/prometheus-9090  /tidb-deploy/prometheus-9090
+192.168.93.128:4001   tidb        192.168.93.128  4001/10081                       linux/x86_64  Up       -                           /tidb-deploy/tidb-4001
+192.168.93.128:9000   tiflash     192.168.93.128  9000/8123/3930/20170/20292/8234  linux/x86_64  Up       /tidb-data/tiflash-9000     /tidb-deploy/tiflash-9000
+192.168.93.128:20160  tikv        192.168.93.128  20160/20180                      linux/x86_64  Up       /tidb-data/tikv-20160       /tidb-deploy/tikv-20160
+192.168.93.128:20161  tikv        192.168.93.128  20161/20181                      linux/x86_64  Up       /tidb-data/tikv-20161       /tidb-deploy/tikv-20161
+192.168.93.128:20162  tikv        192.168.93.128  20162/20182                      linux/x86_64  Up       /tidb-data/tikv-20162       /tidb-deploy/tikv-20162
+Total nodes: 9
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster list
+tiup is checking updates for component cluster ...
+A new version of cluster is available:
+   The latest version:         v1.11.1
+   Local installed version:    v1.9.1
+   Update current component:   tiup update cluster
+   Update all components:      tiup update --all
+
+Starting component `cluster`: /root/.tiup/components/cluster/v1.9.1/tiup-cluster /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+Name      User  Version  Path                                           PrivateKey
+----      ----  -------  ----                                           ----------
+tidb_lsy  tidb  v5.4.0   /root/.tiup/storage/cluster/clusters/tidb_lsy  /root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa
+[root@BigData01 ~]# 
+You have new mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup update --self
+download https://tiup-mirrors.pingcap.com/tiup-v1.11.1-linux-amd64.tar.gz 6.92 MiB / 6.92 MiB 100.00% 11.92 MiB/s                                                                                                                                                                          
+Updated successfully!
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup --version
+1.11.1 tiup
+Go Version: go1.19.2
+Git Ref: v1.11.1
+GitHash: b95172df211e4f9b643590f2dd8436ad60c72b38
+[root@BigData01 ~]# tiup update cluster
+download https://tiup-mirrors.pingcap.com/cluster-v1.11.1-linux-amd64.tar.gz 8.44 MiB / 8.44 MiB 100.00% 12.23 MiB/s                                                                                                                                                                       
+Updated successfully!
+[root@BigData01 ~]# tiup cluster --version
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster --version
+tiup version 1.11.1 tiup
+Go Version: go1.19.2
+Git Ref: v1.11.1
+GitHash: b95172df211e4f9b643590f2dd8436ad60c72b38
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster check tidb-lsy --cluster
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster check tidb-lsy --cluster
+
+Error: cluster tidb-lsy does not exist
+
+Verbose debug logs has been written to /root/.tiup/logs/tiup-cluster-debug-2022-12-25-18-16-55.log.
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster check tidb_lsy --cluster
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster check tidb_lsy --cluster
++ Download necessary tools
+  - Downloading check tools for linux/amd64 ... Done
++ Collect basic system information
++ Collect basic system information
+  - Getting system info of 192.168.93.128:22 ... Done
++ Check time zone
+  - Checking node 192.168.93.128 ... Done
++ Check system requirements
++ Check system requirements
++ Check system requirements
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
+  - Checking node 192.168.93.128 ... Done
++ Cleanup check files
+  - Cleanup check files on 192.168.93.128:22 ... Done
+Node            Check         Result  Message
+----            -----         ------  -------
+192.168.93.128  memory        Pass    memory size is 8192MB
+192.168.93.128  sysctl        Fail    net.ipv4.tcp_syncookies = 1, should be 0
+192.168.93.128  sysctl        Fail    vm.swappiness = 70, should be 0
+192.168.93.128  sysctl        Fail    fs.file-max = 788441, should be greater than 1000000
+192.168.93.128  sysctl        Fail    net.core.somaxconn = 128, should be greater than 32768
+192.168.93.128  service       Fail    service irqbalance is not running
+192.168.93.128  os-version    Pass    OS is CentOS Linux 7 (Core) 7.7.1908
+192.168.93.128  limits        Fail    soft limit of 'nofile' for user 'tidb' is not set or too low
+192.168.93.128  limits        Fail    hard limit of 'nofile' for user 'tidb' is not set or too low
+192.168.93.128  limits        Fail    soft limit of 'stack' for user 'tidb' is not set or too low
+192.168.93.128  selinux       Fail    SELinux is not disabled
+192.168.93.128  network       Pass    network speed of ens33 is 1000MB
+192.168.93.128  disk          Fail    multiple components tikv:/tidb-data/tikv-20160,tikv:/tidb-data/tikv-20161,tikv:/tidb-data/tikv-20162,tiflash:/tidb-data/tiflash-9000 are using the same partition 192.168.93.128:/ as data dir
+192.168.93.128  thp           Fail    THP is enabled, please disable it for best performance
+192.168.93.128  command       Fail    numactl not usable, bash: numactl: command not found
+192.168.93.128  permission    Pass    /tidb-data/tikv-20160 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/pd-2379 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/tikv-20161 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/tikv-20162 is writable
+192.168.93.128  permission    Pass    /tidb-data/pd-2379 is writable
+192.168.93.128  permission    Pass    /tidb-data/tiflash-9000 is writable
+192.168.93.128  permission    Pass    /tidb-data/tikv-20162 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/cdc-8300 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/tidb-4001 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/grafana-3000 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/prometheus-9090 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/tikv-20160 is writable
+192.168.93.128  permission    Pass    /tidb-deploy/tiflash-9000 is writable
+192.168.93.128  permission    Pass    /tidb-data/tikv-20161 is writable
+192.168.93.128  permission    Pass    /tidb-data/prometheus-9090 is writable
+192.168.93.128  permission    Pass    /tidb-data/cdc-8300 is writable
+192.168.93.128  cpu-cores     Pass    number of CPU cores / threads: 1
+192.168.93.128  cpu-governor  Warn    Unable to determine current CPU frequency governor policy
+192.168.93.128  swap          Warn    swap is enabled, please disable it for best performance
+192.168.93.128  disk          Warn    mount point / does not have 'noatime' option set
+Checking region status of the cluster tidb_lsy...
+All regions are healthy.
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster upgrade tidb_lsy v6.4.0
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster upgrade tidb_lsy v6.4.0
+This operation will upgrade tidb v5.4.0 cluster tidb_lsy to v6.4.0.
+Do you want to continue? [y/N]:(default=N) y
+Upgrading cluster...
++ [ Serial ] - SSHKeySet: privateKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa, publicKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa.pub
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [ Serial ] - Download: component=cdc, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tiflash, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=pd, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tikv, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tidb, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=prometheus, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=grafana, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20162'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tiflash-9000'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/pd-2379'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20160'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20161'
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162
++ [ Serial ] - BackupComponent: component=pd, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160
++ [ Serial ] - BackupComponent: component=tiflash, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=pd, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tiflash, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/pd-2379.service, deploy_dir=/tidb-deploy/pd-2379, data_dir=[/tidb-data/pd-2379], log_dir=/tidb-deploy/pd-2379/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=tidb, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20161.service, deploy_dir=/tidb-deploy/tikv-20161, data_dir=[/tidb-data/tikv-20161], log_dir=/tidb-deploy/tikv-20161/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - CopyComponent: component=tidb, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20160.service, deploy_dir=/tidb-deploy/tikv-20160, data_dir=[/tidb-data/tikv-20160], log_dir=/tidb-deploy/tikv-20160/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20162.service, deploy_dir=/tidb-deploy/tikv-20162, data_dir=[/tidb-data/tikv-20162], log_dir=/tidb-deploy/tikv-20162/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tiflash-9000.service, deploy_dir=/tidb-deploy/tiflash-9000, data_dir=[/tidb-data/tiflash-9000], log_dir=/tidb-deploy/tiflash-9000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/cdc-8300'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/prometheus-9090'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=grafana, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tidb-4001.service, deploy_dir=/tidb-deploy/tidb-4001, data_dir=[], log_dir=/tidb-deploy/tidb-4001/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - BackupComponent: component=cdc, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300
++ [ Serial ] - BackupComponent: component=prometheus, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090
++ [ Serial ] - CopyComponent: component=cdc, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=prometheus, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=grafana, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/cdc-8300.service, deploy_dir=/tidb-deploy/cdc-8300, data_dir=[/tidb-data/cdc-8300], log_dir=/tidb-deploy/cdc-8300/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/prometheus-9090.service, deploy_dir=/tidb-deploy/prometheus-9090, data_dir=[/tidb-data/prometheus-9090], log_dir=/tidb-deploy/prometheus-9090/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/grafana-3000.service, deploy_dir=/tidb-deploy/grafana-3000, data_dir=[], log_dir=/tidb-deploy/grafana-3000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - UpgradeCluster
+Upgrading component tiflash
+	Restarting instance 192.168.93.128:9000
+	Restart instance 192.168.93.128:9000 success
+Upgrading component pd
+	Restarting instance 192.168.93.128:2379
+	Restart instance 192.168.93.128:2379 success
+Upgrading component tikv
+
+Error: failed to evict store leader 192.168.93.128: metric tikv_raftstore_region_count{type="leader"} not found
+
+Verbose debug logs has been written to /root/.tiup/logs/tiup-cluster-debug-2022-12-25-18-24-06.log.
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster display tidb_lsy
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster display tidb_lsy
+Cluster type:       tidb
+Cluster name:       tidb_lsy
+Cluster version:    v5.4.0
+Deploy user:        tidb
+SSH type:           builtin
+Dashboard URL:      http://192.168.93.128:2379/dashboard
+Grafana URL:        http://192.168.93.128:3000
+ID                    Role        Host            Ports                            OS/Arch       Status   Data Dir                    Deploy Dir
+--                    ----        ----            -----                            -------       ------   --------                    ----------
+192.168.93.128:8300   cdc         192.168.93.128  8300                             linux/x86_64  Up       /tidb-data/cdc-8300         /tidb-deploy/cdc-8300
+192.168.93.128:3000   grafana     192.168.93.128  3000                             linux/x86_64  Up       -                           /tidb-deploy/grafana-3000
+192.168.93.128:2379   pd          192.168.93.128  2379/2380                        linux/x86_64  Up|L|UI  /tidb-data/pd-2379          /tidb-deploy/pd-2379
+192.168.93.128:9090   prometheus  192.168.93.128  9090/12020                       linux/x86_64  Up       /tidb-data/prometheus-9090  /tidb-deploy/prometheus-9090
+192.168.93.128:4001   tidb        192.168.93.128  4001/10081                       linux/x86_64  Up       -                           /tidb-deploy/tidb-4001
+192.168.93.128:9000   tiflash     192.168.93.128  9000/8123/3930/20170/20292/8234  linux/x86_64  Up       /tidb-data/tiflash-9000     /tidb-deploy/tiflash-9000
+192.168.93.128:20160  tikv        192.168.93.128  20160/20180                      linux/x86_64  Up       /tidb-data/tikv-20160       /tidb-deploy/tikv-20160
+192.168.93.128:20161  tikv        192.168.93.128  20161/20181                      linux/x86_64  Up       /tidb-data/tikv-20161       /tidb-deploy/tikv-20161
+192.168.93.128:20162  tikv        192.168.93.128  20162/20182                      linux/x86_64  Up       /tidb-data/tikv-20162       /tidb-deploy/tikv-20162
+Total nodes: 9
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster audit
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster audit
+ID           Time                       Command
+--           ----                       -------
+fQ5JhBFdvqC  2022-02-26T11:57:48+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ5K01GJt61  2022-02-26T12:08:11+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ65BZPMrRr  2022-02-26T17:01:27+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ65Hh6mQvr  2022-02-26T17:02:42+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ65TmpWDvW  2022-02-26T17:05:39+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ65YRbXMwd  2022-02-26T17:06:58+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ66wBMSCYV  2022-02-26T17:15:07+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ66KV8jvYQ  2022-02-26T17:18:26+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy --init
+fQ67NJvz2Fv  2022-02-26T17:34:13+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fQ67TSH773z  2022-02-26T17:35:43+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fQ69yM09m9H  2022-02-26T18:00:37+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fQ69BFZ6351  2022-02-26T18:01:11+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6b9F2vPLm  2022-02-26T18:09:58+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fQ6bdHvP60v  2022-02-26T18:10:52+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fQ6bdVyksgJ  2022-02-26T18:10:56+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6bqtPmjwB  2022-02-26T18:13:26+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6brzDHWX3  2022-02-26T18:13:46+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6bvkmXfJW  2022-02-26T18:14:34+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6bvG5ZvNy  2022-02-26T18:14:40+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fQ6bwBtbbv3  2022-02-26T18:14:56+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6bysbqsKJ  2022-02-26T18:15:29+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fQ6bzmk0nB4  2022-02-26T18:15:45+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ6bCZw9nhp  2022-02-26T18:16:31+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster clean tidb_lsy
+fQ6bFYCqykd  2022-02-26T18:17:06+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster clean tidb_lsy --all
+fQ6c1ztD2fG  2022-02-26T18:22:33+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ6cbR2mvrn  2022-02-26T18:25:17+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster destroy tidb_lsy
+fQ6cfWkgZWP  2022-02-26T18:26:11+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster destroy tidb_lsy
+fQ6cgqJ7Hsj  2022-02-26T18:26:20+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ6csmmd1Hf  2022-02-26T18:28:57+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster deploy tidb_lsy v5.4.0 ./topo.yaml --user root -p
+fQ6cJByRR4r  2022-02-26T18:32:50+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy --init
+fQ6cRkprVvw  2022-02-26T18:34:48+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6cXP1gkrM  2022-02-26T18:36:24+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6pWWkJ7X6  2022-02-26T20:50:46+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6rvsVP1rB  2022-02-26T21:14:05+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6rHRbdZzy  2022-02-26T21:17:08+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ6rMGphyXH  2022-02-26T21:18:15+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ7rVy8B7pr  2022-02-27T10:03:04+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fQ7rWBS2xR7  2022-02-27T10:03:23+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tudb_lsy
+fQ7rXftR43h  2022-02-27T10:03:34+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ7rZB5hkQT  2022-02-27T10:04:15+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ7yz5Zpdjv  2022-02-27T11:27:42+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQ7CHRtgShy  2022-02-27T12:14:33+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQcdrnHTskv  2022-03-01T10:17:37+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQcXbRnN5zj  2022-03-01T19:12:41+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fQd4H4sZJBp  2022-03-01T21:04:29+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fQd4XsFSkGB  2022-03-01T21:08:24+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fQd4XZY6YK8  2022-03-01T21:08:34+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQd557G7q0r  2022-03-01T21:10:40+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQd7X2CLQHR  2022-03-01T21:53:09+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fQd7ZH1YPXK  2022-03-01T21:53:56+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQd8bDC7sSt  2022-03-01T21:57:08+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fQd8JmjzG8R  2022-03-01T22:04:41+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fQf7WnvnBDn  2022-03-02T10:35:45+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQf8Jt4J6t5  2022-03-02T10:47:31+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fQf9t00JVwr  2022-03-02T10:58:49+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fRrBZXtq1r3  2022-04-03T11:08:45+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fRrC5fpQByD  2022-04-03T11:10:19+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fRrCd4kjbqJ  2022-04-03T11:12:19+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fSZNbXCtrhf  2022-05-15T09:47:43+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fSZV4LLYgWh  2022-05-15T11:15:39+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster stop tidb_lsy
+fSZVf3C7KKK  2022-05-15T11:18:05+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fSZXzBPqBjv  2022-05-15T11:52:51+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fSZYqdW0w8m  2022-05-15T12:05:21+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fSZYLxdGFNV  2022-05-15T12:10:25+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fT00xKsgV07  2022-05-15T12:37:10+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fT00ZDPwP0T  2022-05-15T12:43:53+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fT01qw5zQWN  2022-05-15T12:50:18+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster restart tidb_lsy
+fTfzHNHf3M9  2022-05-22T17:09:40+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fXRMTS4vjFH  2022-08-27T18:14:25+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fXRMVV9q5ZC  2022-08-27T18:14:44+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+fXRMXJShn4B  2022-08-27T18:15:16+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fXRPQgFF49w  2022-08-27T18:43:17+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster scale-out tidb_lsy scale-out.yaml
+fXRPS6QkF9h  2022-08-27T18:43:50+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fXT5RwZQgCj  2022-08-28T11:10:48+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display
+fXT5VzRgyhn  2022-08-28T11:11:42+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fYyrgpGRYZ9  2022-09-15T15:31:42+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fYyrhfxJBYs  2022-09-15T15:31:57+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fYyHP6q03Mx  2022-09-15T18:53:58+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fYyHQhwXygG  2022-09-15T18:54:19+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fYz22CYKq1H  2022-09-15T23:11:54+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fYMrPHhP0tq  2022-09-21T11:30:29+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fYR1mG09mRx  2022-09-23T09:00:50+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fZG70XkhGsZ  2022-10-15T16:22:57+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster start tidb_lsy
+fZG79MkD9Rk  2022-10-15T16:25:32+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_ecm
+fZG7b7QB7MS  2022-10-15T16:25:39+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+fZG9gYzFHqp  2022-10-15T16:56:58+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+g2hhrpxhJWr  2022-12-25T18:03:58+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+g2hhxZHpdf3  2022-12-25T18:05:36+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster display tidb_lsy
+g2hhzfVpbP8  2022-12-25T18:05:59+08:00  /root/.tiup/components/cluster/v1.9.1/tiup-cluster list
+g2hjhxm0jph  2022-12-25T18:16:55+08:00  /root/.tiup/components/cluster/v1.11.1/tiup-cluster check tidb-lsy --cluster
+g2hjkfn0wfV  2022-12-25T18:17:25+08:00  /root/.tiup/components/cluster/v1.11.1/tiup-cluster check tidb_lsy --cluster
+g2hjN2scGj0  2022-12-25T18:24:06+08:00  /root/.tiup/components/cluster/v1.11.1/tiup-cluster upgrade tidb_lsy v6.4.0
+g2hkch9Z0hP  2022-12-25T18:30:37+08:00  /root/.tiup/components/cluster/v1.11.1/tiup-cluster display tidb_lsy
+g2hkh6Sm3fg  2022-12-25T18:31:45+08:00  /root/.tiup/components/cluster/v1.11.1/tiup-cluster display tidb_lsy
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster replay g2hjN2scGj0
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster replay g2hjN2scGj0
+Will replay the command `tiup cluster upgrade tidb_lsy v6.4.0`
+Do you want to continue? [y/N]: (default=N) y
+This operation will upgrade tidb v5.4.0 cluster tidb_lsy to v6.4.0.
+Do you want to continue? [y/N]:(default=N) y
+Upgrading cluster...
++ [ Serial ] - SSHKeySet: privateKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa, publicKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa.pub
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [ Serial ] - Download: component=cdc, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tiflash, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=pd, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tikv, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tidb, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=prometheus, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=grafana, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20162'
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162 os=linux, arch=amd64
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tiflash-9000'
++ [ Serial ] - BackupComponent: component=tiflash, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000
++ [ Serial ] - CopyComponent: component=tiflash, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tiflash-9000.service, deploy_dir=/tidb-deploy/tiflash-9000, data_dir=[/tidb-data/tiflash-9000], log_dir=/tidb-deploy/tiflash-9000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=tidb, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001
++ [ Serial ] - CopyComponent: component=tidb, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tidb-4001.service, deploy_dir=/tidb-deploy/tidb-4001, data_dir=[], log_dir=/tidb-deploy/tidb-4001/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/pd-2379'
++ [ Serial ] - BackupComponent: component=pd, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379
++ [ Serial ] - CopyComponent: component=pd, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/pd-2379.service, deploy_dir=/tidb-deploy/pd-2379, data_dir=[/tidb-data/pd-2379], log_dir=/tidb-deploy/pd-2379/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20160'
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20160.service, deploy_dir=/tidb-deploy/tikv-20160, data_dir=[/tidb-data/tikv-20160], log_dir=/tidb-deploy/tikv-20160/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20161'
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20161.service, deploy_dir=/tidb-deploy/tikv-20161, data_dir=[/tidb-data/tikv-20161], log_dir=/tidb-deploy/tikv-20161/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20162.service, deploy_dir=/tidb-deploy/tikv-20162, data_dir=[/tidb-data/tikv-20162], log_dir=/tidb-deploy/tikv-20162/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/cdc-8300'
++ [ Serial ] - BackupComponent: component=cdc, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300
++ [ Serial ] - CopyComponent: component=cdc, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/cdc-8300.service, deploy_dir=/tidb-deploy/cdc-8300, data_dir=[/tidb-data/cdc-8300], log_dir=/tidb-deploy/cdc-8300/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/prometheus-9090'
++ [ Serial ] - BackupComponent: component=prometheus, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090
++ [ Serial ] - CopyComponent: component=prometheus, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/prometheus-9090.service, deploy_dir=/tidb-deploy/prometheus-9090, data_dir=[/tidb-data/prometheus-9090], log_dir=/tidb-deploy/prometheus-9090/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=grafana, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000
++ [ Serial ] - CopyComponent: component=grafana, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/grafana-3000.service, deploy_dir=/tidb-deploy/grafana-3000, data_dir=[], log_dir=/tidb-deploy/grafana-3000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - UpgradeCluster
+Upgrading component tiflash
+Upgrading component pd
+Upgrading component tikv
+	Evicting 13 leaders from store 192.168.93.128:20160...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	Restarting instance 192.168.93.128:20160
+	Restart instance 192.168.93.128:20160 success
+	Evicting 12 leaders from store 192.168.93.128:20161...
+	  Still waitting for 12 store leaders to transfer...
+	  Still waitting for 12 store leaders to transfer...
+	  Still waitting for 12 store leaders to transfer...
+	Restarting instance 192.168.93.128:20161
+	Restart instance 192.168.93.128:20161 success
+	Evicting 19 leaders from store 192.168.93.128:20162...
+	  Still waitting for 19 store leaders to transfer...
+	  Still waitting for 19 store leaders to transfer...
+	  Still waitting for 19 store leaders to transfer...
+	Restarting instance 192.168.93.128:20162
+	Restart instance 192.168.93.128:20162 success
+Upgrading component tidb
+	Restarting instance 192.168.93.128:4001
+	Restart instance 192.168.93.128:4001 success
+Upgrading component cdc
+	Restarting instance 192.168.93.128:8300
+	Restart instance 192.168.93.128:8300 success
+Upgrading component prometheus
+	Restarting instance 192.168.93.128:9090
+	Restart instance 192.168.93.128:9090 success
+Upgrading component grafana
+	Restarting instance 192.168.93.128:3000
+	Restart instance 192.168.93.128:3000 success
+Stopping component node_exporter
+	Stopping instance 192.168.93.128
+
+Error: failed to stop: 192.168.93.128 node_exporter-9100.service, please check the instance's log() for more detail.: timed out waiting for port 9100 to be stopped after 2m0s
+
+Verbose debug logs has been written to /root/.tiup/logs/tiup-cluster-debug-2022-12-25-18-36-50.log.
+You have mail in /var/spool/mail/root
+
+
+# 重新执行升级命令，成功从V5.4升级为V6.4
+
+[root@BigData01 ~]# tiup cluster display tidb_lsy
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster display tidb_lsy
+Cluster type:       tidb
+Cluster name:       tidb_lsy
+Cluster version:    v5.4.0
+Deploy user:        tidb
+SSH type:           builtin
+Dashboard URL:      http://192.168.93.128:2379/dashboard
+Grafana URL:        http://192.168.93.128:3000
+ID                    Role        Host            Ports                            OS/Arch       Status   Data Dir                    Deploy Dir
+--                    ----        ----            -----                            -------       ------   --------                    ----------
+192.168.93.128:8300   cdc         192.168.93.128  8300                             linux/x86_64  Up       /tidb-data/cdc-8300         /tidb-deploy/cdc-8300
+192.168.93.128:3000   grafana     192.168.93.128  3000                             linux/x86_64  Up       -                           /tidb-deploy/grafana-3000
+192.168.93.128:2379   pd          192.168.93.128  2379/2380                        linux/x86_64  Up|L|UI  /tidb-data/pd-2379          /tidb-deploy/pd-2379
+192.168.93.128:9090   prometheus  192.168.93.128  9090/12020                       linux/x86_64  Up       /tidb-data/prometheus-9090  /tidb-deploy/prometheus-9090
+192.168.93.128:4001   tidb        192.168.93.128  4001/10081                       linux/x86_64  Up       -                           /tidb-deploy/tidb-4001
+192.168.93.128:9000   tiflash     192.168.93.128  9000/8123/3930/20170/20292/8234  linux/x86_64  Up       /tidb-data/tiflash-9000     /tidb-deploy/tiflash-9000
+192.168.93.128:20160  tikv        192.168.93.128  20160/20180                      linux/x86_64  Up       /tidb-data/tikv-20160       /tidb-deploy/tikv-20160
+192.168.93.128:20161  tikv        192.168.93.128  20161/20181                      linux/x86_64  Up       /tidb-data/tikv-20161       /tidb-deploy/tikv-20161
+192.168.93.128:20162  tikv        192.168.93.128  20162/20182                      linux/x86_64  Up       /tidb-data/tikv-20162       /tidb-deploy/tikv-20162
+Total nodes: 9
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster upgrade tidb_lsy v6.4.0
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster upgrade tidb_lsy v6.4.0
+This operation will upgrade tidb v5.4.0 cluster tidb_lsy to v6.4.0.
+Do you want to continue? [y/N]:(default=N) y
+Upgrading cluster...
++ [ Serial ] - SSHKeySet: privateKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa, publicKey=/root/.tiup/storage/cluster/clusters/tidb_lsy/ssh/id_rsa.pub
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [Parallel] - UserSSH: user=tidb, host=192.168.93.128
++ [ Serial ] - Download: component=cdc, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tiflash, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=pd, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tikv, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=tidb, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=prometheus, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Download: component=grafana, version=v6.4.0, os=linux, arch=amd64
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20162'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tiflash-9000'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/pd-2379'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20160'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/tikv-20161'
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161
++ [ Serial ] - BackupComponent: component=tiflash, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000
++ [ Serial ] - BackupComponent: component=pd, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20162 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tiflash, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tiflash-9000 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20161 os=linux, arch=amd64
++ [ Serial ] - BackupComponent: component=tikv, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160
++ [ Serial ] - CopyComponent: component=pd, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/pd-2379 os=linux, arch=amd64
++ [ Serial ] - CopyComponent: component=tikv, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tikv-20160 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/pd-2379.service, deploy_dir=/tidb-deploy/pd-2379, data_dir=[/tidb-data/pd-2379], log_dir=/tidb-deploy/pd-2379/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=tidb, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001
++ [ Serial ] - CopyComponent: component=tidb, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/tidb-4001 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20161.service, deploy_dir=/tidb-deploy/tikv-20161, data_dir=[/tidb-data/tikv-20161], log_dir=/tidb-deploy/tikv-20161/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20162.service, deploy_dir=/tidb-deploy/tikv-20162, data_dir=[/tidb-data/tikv-20162], log_dir=/tidb-deploy/tikv-20162/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tiflash-9000.service, deploy_dir=/tidb-deploy/tiflash-9000, data_dir=[/tidb-data/tiflash-9000], log_dir=/tidb-deploy/tiflash-9000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tikv-20160.service, deploy_dir=/tidb-deploy/tikv-20160, data_dir=[/tidb-data/tikv-20160], log_dir=/tidb-deploy/tikv-20160/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/cdc-8300'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories='/tidb-data/prometheus-9090'
++ [ Serial ] - Mkdir: host=192.168.93.128, directories=''
++ [ Serial ] - BackupComponent: component=grafana, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000
++ [ Serial ] - CopyComponent: component=grafana, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/grafana-3000 os=linux, arch=amd64
++ [ Serial ] - BackupComponent: component=cdc, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300
++ [ Serial ] - BackupComponent: component=prometheus, currentVersion=v5.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090
++ [ Serial ] - CopyComponent: component=cdc, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/cdc-8300 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/tidb-4001.service, deploy_dir=/tidb-deploy/tidb-4001, data_dir=[], log_dir=/tidb-deploy/tidb-4001/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - CopyComponent: component=prometheus, version=v6.4.0, remote=192.168.93.128:/tidb-deploy/prometheus-9090 os=linux, arch=amd64
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/cdc-8300.service, deploy_dir=/tidb-deploy/cdc-8300, data_dir=[/tidb-data/cdc-8300], log_dir=/tidb-deploy/cdc-8300/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/grafana-3000.service, deploy_dir=/tidb-deploy/grafana-3000, data_dir=[], log_dir=/tidb-deploy/grafana-3000/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - InitConfig: cluster=tidb_lsy, user=tidb, host=192.168.93.128, path=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache/prometheus-9090.service, deploy_dir=/tidb-deploy/prometheus-9090, data_dir=[/tidb-data/prometheus-9090], log_dir=/tidb-deploy/prometheus-9090/log, cache_dir=/root/.tiup/storage/cluster/clusters/tidb_lsy/config-cache
++ [ Serial ] - UpgradeCluster
+Upgrading component tiflash
+	Restarting instance 192.168.93.128:9000
+	Restart instance 192.168.93.128:9000 success
+Upgrading component pd
+	Restarting instance 192.168.93.128:2379
+	Restart instance 192.168.93.128:2379 success
+Upgrading component tikv
+	Evicting 13 leaders from store 192.168.93.128:20160...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	  Still waitting for 13 store leaders to transfer...
+	Restarting instance 192.168.93.128:20160
+	Restart instance 192.168.93.128:20160 success
+	Evicting 17 leaders from store 192.168.93.128:20161...
+	  Still waitting for 17 store leaders to transfer...
+	  Still waitting for 17 store leaders to transfer...
+	  Still waitting for 2 store leaders to transfer...
+	  Still waitting for 2 store leaders to transfer...
+	  Still waitting for 2 store leaders to transfer...
+	  Still waitting for 2 store leaders to transfer...
+	  Still waitting for 2 store leaders to transfer...
+	  Still waitting for 1 store leaders to transfer...
+	  Still waitting for 1 store leaders to transfer...
+	  Still waitting for 1 store leaders to transfer...
+	  Still waitting for 1 store leaders to transfer...
+	  Still waitting for 1 store leaders to transfer...
+	Restarting instance 192.168.93.128:20161
+	Restart instance 192.168.93.128:20161 success
+	Evicting 19 leaders from store 192.168.93.128:20162...
+	  Still waitting for 19 store leaders to transfer...
+	  Still waitting for 19 store leaders to transfer...
+	Restarting instance 192.168.93.128:20162
+	Restart instance 192.168.93.128:20162 success
+Upgrading component tidb
+	Restarting instance 192.168.93.128:4001
+	Restart instance 192.168.93.128:4001 success
+Upgrading component cdc
+	Restarting instance 192.168.93.128:8300
+	Restart instance 192.168.93.128:8300 success
+Upgrading component prometheus
+	Restarting instance 192.168.93.128:9090
+	Restart instance 192.168.93.128:9090 success
+Upgrading component grafana
+	Restarting instance 192.168.93.128:3000
+	Restart instance 192.168.93.128:3000 success
+Stopping component node_exporter
+	Stopping instance 192.168.93.128
+	Stop 192.168.93.128 success
+Stopping component blackbox_exporter
+	Stopping instance 192.168.93.128
+	Stop 192.168.93.128 success
+Starting component node_exporter
+	Starting instance 192.168.93.128
+	Start 192.168.93.128 success
+Starting component blackbox_exporter
+	Starting instance 192.168.93.128
+	Start 192.168.93.128 success
+Upgraded cluster `tidb_lsy` successfully
+You have mail in /var/spool/mail/root
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# 
+[root@BigData01 ~]# tiup cluster display tidb_lsy
+tiup is checking updates for component cluster ...
+Starting component `cluster`: /root/.tiup/components/cluster/v1.11.1/tiup-cluster display tidb_lsy
+Cluster type:       tidb
+Cluster name:       tidb_lsy
+Cluster version:    v6.4.0
+Deploy user:        tidb
+SSH type:           builtin
+Dashboard URL:      http://192.168.93.128:2379/dashboard
+Grafana URL:        http://192.168.93.128:3000
+ID                    Role        Host            Ports                            OS/Arch       Status   Data Dir                    Deploy Dir
+--                    ----        ----            -----                            -------       ------   --------                    ----------
+192.168.93.128:8300   cdc         192.168.93.128  8300                             linux/x86_64  Up       /tidb-data/cdc-8300         /tidb-deploy/cdc-8300
+192.168.93.128:3000   grafana     192.168.93.128  3000                             linux/x86_64  Up       -                           /tidb-deploy/grafana-3000
+192.168.93.128:2379   pd          192.168.93.128  2379/2380                        linux/x86_64  Up|L|UI  /tidb-data/pd-2379          /tidb-deploy/pd-2379
+192.168.93.128:9090   prometheus  192.168.93.128  9090/12020                       linux/x86_64  Up       /tidb-data/prometheus-9090  /tidb-deploy/prometheus-9090
+192.168.93.128:4001   tidb        192.168.93.128  4001/10081                       linux/x86_64  Up       -                           /tidb-deploy/tidb-4001
+192.168.93.128:9000   tiflash     192.168.93.128  9000/8123/3930/20170/20292/8234  linux/x86_64  Up       /tidb-data/tiflash-9000     /tidb-deploy/tiflash-9000
+192.168.93.128:20160  tikv        192.168.93.128  20160/20180                      linux/x86_64  Up       /tidb-data/tikv-20160       /tidb-deploy/tikv-20160
+192.168.93.128:20161  tikv        192.168.93.128  20161/20181                      linux/x86_64  Up       /tidb-data/tikv-20161       /tidb-deploy/tikv-20161
+192.168.93.128:20162  tikv        192.168.93.128  20162/20182                      linux/x86_64  Up       /tidb-data/tikv-20162       /tidb-deploy/tikv-20162
+Total nodes: 9
+[root@BigData01 ~]# 
