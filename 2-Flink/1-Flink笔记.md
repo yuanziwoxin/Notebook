@@ -87,3 +87,42 @@ Flink**以固定的缓存块为单位**进行网络数据传输，用户可以�
 
 5：要求消息语义为Exectly-once，数据量较大，要求高吞吐低延迟，需要进行状态管理，建议选择Flink；
 
+## Flink运行时架构
+
+两大核心组件：
+
+- JobManager：作业管理器，负责作业和任务的管理和调度；非高可用情况下，只有一个；
+
+  -  JobMaster：负责处理单独的作业（Job），Job和JobMaster一一对应，多个Job可以同时运行在一个集群上；
+    - JobMaster接收客户端提交的Application（包括jar包、数据流图（Dataflow Graph）、作业图（JobGraph））；
+    - 然后把作业图转化为执行图（Execution Graph），它包含了所有可以并行执行的任务；
+    - JobMaster向ResourceManager申请执行任务必要的资源，获取到足够资源后，把执行图分发到真正运行任务的TaskManager上；
+  - ResourceManager：主要负责资源的分配和管理，在Flink集群中只有一个；
+    - 资源：即TaskManager的任务槽（Task Slots），包含了机器用来执行计算的一组CPU和内存资源；
+
+  - Dispatcher（非必需）：分发器，负责提供一个REST接口，用来提交作业，并且负责为每一个新提交的作业启动一个新的JobMaster；
+    - Dispatcher会启动一个WebUI，用来展示和监控作业执行情况；
+    - Dispatcher在架构中是非必需的，在不同的部署模式中可能会被忽略；
+
+- TaskManager：任务管理器，负责任务的实际执行，可以有一个或多个；
+
+  - 实际的工作进程（Worker），负责数据流的具体计算任务（Task）；
+  - 每个TaskManager都包含了一定数量的任务槽（Task Slots）；
+    - 任务槽资源（slots）是资源调度的最小单位，其数据量限制了TaskManager能够并行处理的任务数量；
+  - 在执行过程中，TaskManager可以缓冲数据，还可以跟其他运行同一应用（Application）的TaskManager交换数据；
+
+## 作业提交流程
+
+作业提交的大致流程如下：
+
+- （1）一般情况下，客户端通过Dispatcher提供的REST接口将作业提供给JobManager；
+- （2）由Dispatcher启动JobMaster，并将作业（包括作业图）提交给JobManager；
+- （3）JobMaster将作业解析为可执行的执行图，得到所需要的资源数量，然后向ResourceManager请求slots；
+- （4）ResourceManager判断当前是否有足够的可用资源，如果没有，则启动新的TaskManager；
+- （5）TaskManager启动之后，向ResourceManager注册自己的可用slots；
+- （6）ResourceManager通知TaskManager为新的作业提供slots；
+- （7）TaskManager连接到对应的JobMaster，提供slots；
+- （8）JobMaster将需要执行的作业分发给TaskManager；
+- （9）TaskManager执行作业，可以互相交换数据；
+
+> 注意：如果部署模式不同，或者集群环境不同（如独立模式、YARN、K8s等），那么其中一些步骤可能不同或者省略，也可能有些组件会运行在同一个JVM进程中；
