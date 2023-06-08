@@ -4,11 +4,9 @@
 
 
 
-
-
 # SQL优化案例
 
-## 案例1: Delete 涉及数据量过大导致 OOM
+## 1、Delete 涉及数据量过大导致 OOM
 
 ```
 MySQL [db_stat]> explain delete from t_stat where imp_date<='20200202';
@@ -47,7 +45,7 @@ MySQL [db_stat]> select count(*)  from t_stat where imp_date<='20200202';
 - 删除数据时，缩小数据筛选范围，或者加上 limit N 每次删除一批数据
 - 建议使用 Range 分区表，按照分区快速删除
 
-## 案例2 执行计划不稳定导致查询延迟增加
+## 2、执行计划不稳定导致查询延迟增加
 
 ```
 MySQL [db_stat]> explain SELECT * FROM `tbl_article_check_result` `t` WHERE (articleid = '20190925A0PYT800') ORDER BY checkTime desc LIMIT 100 ;
@@ -86,7 +84,7 @@ MySQL [db_stat]> explain SELECT * FROM `tbl_article_check_result` `t` WHERE (art
 - 业务修改 SQL ，使用 force index 固定使用 articleid 列上的索引
 - 业务可以不用修改 SQL，使用 SPM （见上述章节）的 create binding 创建 force index 的绑定 SQL，可以避免执行计划不稳定导致的性能下降；
 
-## 案例3 查询字段与值的数据类型不匹配
+## 3、查询字段与值的数据类型不匹配
 
 ```
 MySQL [db_stat]> explain select * from t_like_list where person_id=1535538061143263;
@@ -126,7 +124,7 @@ MySQL [db_stat]> explain select * from table:t_like_list where person_id='153553
 3 rows in set (0.00 sec)
 ```
 
-[案例4 读热点导致 SQL 延迟增加](#案例4 读热点导致 SQL 延迟增加)[背景](#案例4 读热点导致 SQL 延迟增加/背景)
+## 4、读热点导致 SQL 延迟增加
 
 某个数据量 600G 左右、读多写少的 TiDB 集群，某段时间发现 TiDB 监控的 Query Summary - Duration 指标显著增加，p99 如下图。
 
@@ -258,7 +256,7 @@ leader 迁走之后，原 TiKV 节点的 Duration 立刻下降，但是迁移到
 
 对于分布式数据库的读热点问题，有时难以通过优化 SQL 的方式解决，需要分析整个 TiDB 集群的监控和日志来定位原因。严重的读热点可能导致部分 TiKV 达到资源瓶颈，这种短板效应限制了整个集群性能的充分发挥，通过分裂 region 的方式可以将热点 region 分散到更多的 TiKV 节点上，让每个 TiKV 的负载尽可能达到均衡，缓解读热点对 SQL 查询性能的影响。更多热点问题的处理思路可以参考 [TiDB 查询优化及调优系列（四）查询执行计划的调整及优化原理 ](https://pingcap.com/zh/blog/tidb-query-optimization-and-tuning-4)。
 
-[案例5 SQL 执行计划不准](#案例5 SQL 执行计划不准)[背景](#案例5 SQL 执行计划不准/背景)
+## 5、SQL 执行计划不准
 
 SQL 执行时间突然变长
 
