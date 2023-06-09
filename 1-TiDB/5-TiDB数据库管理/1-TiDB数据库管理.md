@@ -1159,6 +1159,8 @@ MySQL [(none)]>
 
 ![image-20230605122144017](1-TiDB数据库管理.assets/image-20230605122144017.png)
 
+> 如果两边都是TiDB数据库，则可以边同步边校验；如果一边MySQL，一边TiDB，则不支持边同步边校验，只能静止校验；
+
 ## 安装
 
 sync-diff-inspector 集成在 tidb-community-tookit软件包中；
