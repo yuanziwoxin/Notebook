@@ -1135,7 +1135,221 @@ MySQL [(none)]>
 
 ![image-20230604191018601](1-TiDB数据库管理.assets/image-20230604191018601.png)
 
+# Dumpling
 
+## Dumpling架构
+
+![image-20230612230406563](1-TiDB数据库管理.assets/image-20230612230406563.png)
+
+## Dumpling 架构与特点
+
+![image-20230612230421894](1-TiDB数据库管理.assets/image-20230612230421894.png)
+
+## Dumpling适用场景
+
+![image-20230612230533089](1-TiDB数据库管理.assets/image-20230612230533089.png)
+
+
+
+![image-20230612230631218](1-TiDB数据库管理.assets/image-20230612230631218.png)
+
+## Dumpling 所需权限
+
+![image-20230612230810707](1-TiDB数据库管理.assets/image-20230612230810707.png)
+
+## Dumpling 导出SQL文件
+
+![image-20230612230858000](1-TiDB数据库管理.assets/image-20230612230858000.png)
+
+> -t 表示设置线程数；
+>
+> -r 200000 表示 达到 20万行，就另起一个文件
+>
+> -F 256 表示 达到256MiB，就另起一个文件；
+>
+> -r 和 -F 哪个条件先满足，则就会另起一个文件；
+
+## Dumpling 导出CSV文件
+
+![image-20230612231133732](1-TiDB数据库管理.assets/image-20230612231133732.png)
+
+> 不设置 --filetype, 默认导出SQL文件；
+
+## 对导出数据进行筛选
+
+![image-20230612231241604](1-TiDB数据库管理.assets/image-20230612231241604.png)
+
+
+
+![image-20230612231335707](1-TiDB数据库管理.assets/image-20230612231335707.png)
+
+
+
+![image-20230612231406284](1-TiDB数据库管理.assets/image-20230612231406284.png)
+
+
+
+## 导出数据的格式
+
+![image-20230612231635728](1-TiDB数据库管理.assets/image-20230612231635728.png)
+
+
+
+![image-20230612231730185](1-TiDB数据库管理.assets/image-20230612231730185.png)
+
+
+
+![image-20230612231756982](1-TiDB数据库管理.assets/image-20230612231756982.png)
+
+
+
+![image-20230612231832888](1-TiDB数据库管理.assets/image-20230612231832888.png)
+
+
+
+## 导出数据的一致性
+
+![image-20230612231859540](1-TiDB数据库管理.assets/image-20230612231859540.png)
+
+> 默认是snapshot；
+
+## Dumpling性能优化
+
+![image-20230612232540670](1-TiDB数据库管理.assets/image-20230612232540670.png)
+
+# TiDB Lightning
+
+## TiDB Lightning的原理
+
+![image-20230613224041041](1-TiDB数据库管理.assets/image-20230613224041041.png)
+
+V 6.1.0 版本开始，
+
+Local backend：改名为Physical Import Mode，表中不能有数据；
+
+TiDB backend：改名为Logical Import Mode；
+
+### Physical Import Mode
+
+![image-20230613224346762](1-TiDB数据库管理.assets/image-20230613224346762.png)
+
+![image-20230613224418179](1-TiDB数据库管理.assets/image-20230613224418179.png)
+
+![image-20230613224515279](1-TiDB数据库管理.assets/image-20230613224515279.png)
+
+![image-20230613224536978](1-TiDB数据库管理.assets/image-20230613224536978.png)
+
+### Logical Import Mode
+
+连接数据库，执行SQL语句（Replace）
+
+
+
+## TiDB Lightning的导入模式（Import Mode）
+
+![image-20230613224625846](1-TiDB数据库管理.assets/image-20230613224625846.png)
+
+## TiDB Lightning的适用场景
+
+![image-20230613224837249](1-TiDB数据库管理.assets/image-20230613224837249.png)
+
+
+
+## TiDB Lightning的限制
+
+- 如果与TiFlash一起使用，导入速度可能有影响，不像与TiVK使用那么快，因为考虑到TiFlash副本的原因；
+- 如果表的字符集为GBK，V5.4之后才支持；
+- 如果源数据是Apache Parquet，目前只支持Amazon的列存文件格式（Aurora）；
+
+![image-20230613225157272](1-TiDB数据库管理.assets/image-20230613225157272.png)
+
+## TiDB Lightning的使用
+
+### 硬件需求
+
+![image-20230613225608305](1-TiDB数据库管理.assets/image-20230613225608305.png)
+
+> region-concurrency用于控制TiDB Lightning使用的CPU核数，混合部署时一般建议设置为机器的75%；
+>
+> 如果机器的CPU核数为16核，则region-concurrency可以设置为12；
+
+### 目标（下游）数据库权限
+
+![image-20230613230111963](1-TiDB数据库管理.assets/image-20230613230111963.png)
+
+### 并行导入
+
+![image-20230613230146644](1-TiDB数据库管理.assets/image-20230613230146644.png)
+
+![image-20230613230338994](1-TiDB数据库管理.assets/image-20230613230338994.png)
+
+![image-20230613230457928](1-TiDB数据库管理.assets/image-20230613230457928.png)
+
+### 前置检查
+
+![image-20230613225710768](1-TiDB数据库管理.assets/image-20230613225710768.png)
+
+
+
+### 数据过滤
+
+![image-20230613230850049](1-TiDB数据库管理.assets/image-20230613230850049.png)
+
+### 断点续传
+
+![image-20230613230938753](1-TiDB数据库管理.assets/image-20230613230938753.png)
+
+![image-20230613231033100](1-TiDB数据库管理.assets/image-20230613231033100.png)
+
+
+
+# TiCDC
+
+## TiCDC的原理
+
+![image-20230613231704571](1-TiDB数据库管理.assets/image-20230613231704571.png)
+
+> TiCDC读取的是TiKV的KVC Change Log；
+
+## TiCDC的适用场景
+
+- 数据库灾备
+
+- 数据集成
+
+## TiCDC的限制
+
+![image-20230613232207641](1-TiDB数据库管理.assets/image-20230613232207641.png)
+
+## TiCDC的适用
+
+### 硬件配置
+
+![image-20230613232422181](1-TiDB数据库管理.assets/image-20230613232422181.png)
+
+### 公共参数
+
+![image-20230613232900582](1-TiDB数据库管理.assets/image-20230613232900582.png) 
+
+### changefeed的状态
+
+![image-20230613233041394](1-TiDB数据库管理.assets/image-20230613233041394.png)
+
+### 管理同步任务
+
+![image-20230613233306950](1-TiDB数据库管理.assets/image-20230613233306950.png)
+
+
+
+![image-20230613233629331](1-TiDB数据库管理.assets/image-20230613233629331.png)
+
+
+
+### 灾难场景的最终一致性复制 
+
+![image-20230613233648186](1-TiDB数据库管理.assets/image-20230613233648186.png)
+
+> 如果写入下游的延迟比较厉害，可以先写入外部存储中，如以redolog的形式存入 Amazon S3/NFS等，避免因下游写入速度太慢，而导致在灾难场景造成丢数；
 
 # sync-diff-inspector
 
@@ -1198,3 +1412,274 @@ sync-diff-inspector 集成在 tidb-community-tookit软件包中；
 > （1）如果设置了比较源端数据库test.t1 和 目标端数据库 test.t2表，而此时源端数据库又有一个和目标端数据库比较的表名一致的表（如 test.t2），则默认会将源端数据库 test.t1 和 test.t2表作为一个表的分片合并起来与目标端数据库的 test.t2表进行比较，因为sycn-diff-inspector 默认开启 sharding 校验，只有关闭 sharding 校验（设置sharding为false），才会只比较源端数据库 test.t1 和 目标端数据库 test.t2 表；
 >
 > （2）注意两边数据库编码格式和排序设置的一致；
+
+# TiDB Data Migration（DM）
+
+## DM的原理
+
+![image-20230608224018406](1-TiDB数据库管理.assets/image-20230608224018406.png)
+
+## DM的适用场景
+
+
+
+![image-20230608224522011](1-TiDB数据库管理.assets/image-20230608224522011.png)
+
+> 源库表与目标库异构表的同步：
+>
+> 源库表的表结构和目标库表结构不同，也可以同步，如源库表有id,name两个字段，而目标库表有id,name和age字段，也是可以同步成功的；
+
+## DM的限制
+
+![image-20230608224744283](1-TiDB数据库管理.assets/image-20230608224744283.png)
+
+## DM的使用
+
+### 软硬件配置
+
+![image-20230608225127522](1-TiDB数据库管理.assets/image-20230608225127522.png)
+
+### DM安装
+
+```shell
+tiup install dm dmctl
+```
+
+### 配置文件
+
+![image-20230608225426977](1-TiDB数据库管理.assets/image-20230608225426977.png)
+
+### DM的部署
+
+![image-20230608225630844](1-TiDB数据库管理.assets/image-20230608225630844.png)
+
+```shell
+# 查看dm可用的版本
+tiup list dm-master
+# 部署dm集群
+tiup dm deloy dm-test v6.1.0 ./topology_dm.yaml --user root -p
+# 查看安装的dm集群
+tiup dm list
+# 查看dm集群的状态
+tiup dm display dm-test
+# 启动dm集群
+tiup dm start dm-test 
+```
+
+### 任务管理
+
+![image-20230608230434952](1-TiDB数据库管理.assets/image-20230608230434952.png)
+
+
+
+![image-20230608230651144](1-TiDB数据库管理.assets/image-20230608230651144.png)
+
+创建数据源（上游数据库）
+
+![image-20230608230838823](1-TiDB数据库管理.assets/image-20230608230838823.png)
+
+
+
+**注意上游数据库这几个参数的打开**：
+
+![image-20230610142855332](1-TiDB数据库管理.assets/image-20230610142855332.png)
+
+上游数据库的server_id和下游数据库的server_id需要不一致；
+
+### 指定目标数据库（下游数据库）
+
+![image-20230608231205579](1-TiDB数据库管理.assets/image-20230608231205579.png)
+
+### Block & Allow Table Lists
+
+![image-20230608231808782](1-TiDB数据库管理.assets/image-20230608231808782.png)
+
+Block&Allow Table List 用于过滤**对于某些数据库或者表的所有操作**；
+
+### Binlog event filter
+
+![image-20230608231910288](1-TiDB数据库管理.assets/image-20230608231910288.png)
+
+Binlog event filter 用于过滤**数据库中特定表的特定类型操作**；
+
+### Table routings
+
+![image-20230608232017291](1-TiDB数据库管理.assets/image-20230608232017291.png)
+
+### 在数据源配置引用规则
+
+![image-20230608232027472](1-TiDB数据库管理.assets/image-20230608232027472.png)
+
+### 检查与启动任务
+
+![image-20230608232116330](1-TiDB数据库管理.assets/image-20230608232116330.png)
+
+```shell
+# 启动
+tiup dmctl --master--addr=xxx start-task dm-task.yaml
+# 暂停
+tiup dmctl --master--addr=xxx pause-task dm-task.yaml
+# 恢复
+tiup dmctl --master--addr=xxx resume-task dm-task.yaml
+# 停止
+tiup dmctl --master--addr=xxx stop-task dm-task.yaml
+# 查询任务
+tiup dmctl --master--addr=xxx query-status dm-task.yaml
+```
+
+### 性能优化
+
+![image-20230608234056424](1-TiDB数据库管理.assets/image-20230608234056424.png)
+
+# TiDB Binlog
+
+## TiDB Binlog 的原理与架构
+
+![image-20230610162007310](1-TiDB数据库管理.assets/image-20230610162007310.png)
+
+> pump是一个集群用于采集上游的Binlog，Drainer用于合并Pump采集的Binlog日志；
+>
+> pump是一个集群，具有高可用；
+
+## TiDB数据库的Binlog格式
+
+![image-20230610162427901](1-TiDB数据库管理.assets/image-20230610162427901.png)
+
+### Pump
+
+![image-20230610162657476](1-TiDB数据库管理.assets/image-20230610162657476.png)
+
+## Drainer
+
+![image-20230610162751069](1-TiDB数据库管理.assets/image-20230610162751069.png)
+
+## binlogctl
+
+![image-20230610162816418](1-TiDB数据库管理.assets/image-20230610162816418.png)
+
+
+
+## TiDB Binlog的限制
+
+![image-20230610162952444](1-TiDB数据库管理.assets/image-20230610162952444.png)
+
+> TiDB V5.0之后 TiDB Binlog很多特性不支持了，建议使用TiCDC替代TiDB Binlog;
+
+## TiDB Binlog的使用
+
+### 部署
+
+![image-20230610163443255](1-TiDB数据库管理.assets/image-20230610163443255.png)
+
+## binlogctl工具
+
+![image-20230610164140508](1-TiDB数据库管理.assets/image-20230610164140508.png)
+
+
+
+![image-20230610164517521](1-TiDB数据库管理.assets/image-20230610164517521.png)
+
+# TiDB高可用
+
+## 计划外系统不可用原因
+
+![image-20230610165947901](1-TiDB数据库管理.assets/image-20230610165947901.png)
+
+
+
+## 计划内系统不可用原因
+
+![image-20230610170042396](1-TiDB数据库管理.assets/image-20230610170042396.png)
+
+## TiDB系统不可用解决方案
+
+![image-20230610170115614](1-TiDB数据库管理.assets/image-20230610170115614.png)
+
+
+
+## 高可用的评判指标
+
+![image-20230610170411609](1-TiDB数据库管理.assets/image-20230610170411609.png)
+
+
+
+![image-20230610170423498](1-TiDB数据库管理.assets/image-20230610170423498.png)
+
+
+
+## Raft 与 Multi Raft
+
+
+
+![image-20230610170603625](1-TiDB数据库管理.assets/image-20230610170603625.png)
+
+
+
+![image-20230610170750247](1-TiDB数据库管理.assets/image-20230610170750247.png)
+
+## TiDB Server的高可用特性
+
+![image-20230610170833002](1-TiDB数据库管理.assets/image-20230610170833002.png)
+
+## TiVK的高可用特性
+
+![image-20230610170950056](1-TiDB数据库管理.assets/image-20230610170950056.png)
+
+## PD的高可用特性
+
+![image-20230610171143108](1-TiDB数据库管理.assets/image-20230610171143108.png)
+
+## CAP 与 TiDB
+
+![image-20230610171241399](1-TiDB数据库管理.assets/image-20230610171241399.png)
+
+- 同一时间看所有节点的数据都是一样的；
+- 系统出现部分数据
+
+> TiDB 保证CAP中的CP；
+
+## TiDB数据库的高可用特性
+
+![image-20230610171614505](1-TiDB数据库管理.assets/image-20230610171614505.png)
+
+# 总述与同城三中心架构*
+
+![image-20230610172837660](1-TiDB数据库管理.assets/image-20230610172837660.png)
+
+## 同城三中心架构
+
+多个数据中心都可以读写；
+
+![image-20230610173041169](1-TiDB数据库管理.assets/image-20230610173041169.png)
+
+
+
+![image-20230610173339263](1-TiDB数据库管理.assets/image-20230610173339263.png)
+
+一个数据中心读写，另外两个作为follower节点；
+
+![image-20230610173406691](1-TiDB数据库管理.assets/image-20230610173406691.png)
+
+
+
+## 同城两中心架构
+
+![image-20230610173609507](1-TiDB数据库管理.assets/image-20230610173609507.png)
+
+![image-20230610181707036](1-TiDB数据库管理.assets/image-20230610181707036.png)
+
+## 两地三中心架构
+
+![image-20230610180100986](1-TiDB数据库管理.assets/image-20230610180100986.png)
+
+
+
+![image-20230610180448483](1-TiDB数据库管理.assets/image-20230610180448483.png)
+
+## 异步复制
+
+![image-20230610180614238](1-TiDB数据库管理.assets/image-20230610180614238.png)
+
+## 集群升级方案
+
+![image-20230610180813057](1-TiDB数据库管理.assets/image-20230610180813057.png)

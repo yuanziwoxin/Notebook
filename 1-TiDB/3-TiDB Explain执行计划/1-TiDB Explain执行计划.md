@@ -1,3 +1,229 @@
+# TiDB执行计划概览
+
+使用 `EXPLAIN` 可查看 TiDB 执行某条语句时选用的执行计划。也就是说，TiDB 在考虑上数百或数千种可能的执行计划后，最终认定该执行计划消耗的资源最少、执行的速度最快。
+
+`EXPLAIN` 示例如下：
+
+```sql
+CREATE TABLE t (id INT NOT NULL PRIMARY KEY auto_increment, a INT NOT NULL, pad1 VARCHAR(255), INDEX(a));
+INSERT INTO t VALUES (1, 1, 'aaa'),(2,2, 'bbb');
+EXPLAIN SELECT * FROM t WHERE a = 1;
+```
+
+返回的结果如下：
+
+```sql
+Query OK, 0 rows affected (0.96 sec)
+
+Query OK, 2 rows affected (0.02 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
++-------------------------------+---------+-----------+---------------------+---------------------------------------------+
+| id                            | estRows | task      | access object       | operator info                               |
++-------------------------------+---------+-----------+---------------------+---------------------------------------------+
+| IndexLookUp_10                | 10.00   | root      |                     |                                             |
+| ├─IndexRangeScan_8(Build)     | 10.00   | cop[tikv] | table:t, index:a(a) | range:[1,1], keep order:false, stats:pseudo |
+| └─TableRowIDScan_9(Probe)     | 10.00   | cop[tikv] | table:t             | keep order:false, stats:pseudo              |
++-------------------------------+---------+-----------+---------------------+---------------------------------------------+
+3 rows in set (0.00 sec)
+```
+
+- `EXPLAIN` 实际不会执行查询。
+
+- [`EXPLAIN ANALYZE`](https://docs.pingcap.com/zh/tidb/v6.1/sql-statement-explain-analyze) 可用于实际执行查询并显示执行计划。如果 TiDB 所选的执行计划非最优，可用 `EXPLAIN` 或 `EXPLAIN ANALYZE` 来进行诊断。
+
+> 这样可以将查询计划中的估计值与执行时所遇到的实际值进行比较。如果估计值与实际值显著不同，那么应考虑在受影响的表上运行 `ANALYZE TABLE`。
+>
+> 在使用 `EXPLAIN ANALYZE` 执行 DML 语句时，数据的修改操作会被正常执行。但目前 DML 语句还无法展示执行计划。
+
+
+
+## 算子执行信息介绍
+
+`execution info` 信息除了基本的 `time` 和 `loop` 信息外，还包含算子特有的执行信息，主要包含了该算子发送 RPC 请求的耗时信息以及其他步骤的耗时。
+
+### Point_Get
+
+`Point_Get` 算子可能包含以下执行信息：
+
+- `Get:{num_rpc:1, total_time:697.051µs}`：向 TiKV 发送 `Get` 类型的 RPC 请求的数量 (`num_rpc`) 和所有 RPC 请求的总耗时 (`total_time`)。
+- `ResolveLock:{num_rpc:1, total_time:12.117495ms}`：读数据遇到锁后，进行 resolve lock 的时间。一般在读写冲突的场景下会出现。
+- `regionMiss_backoff:{num:11, total_time:2010 ms},tikvRPC_backoff:{num:11, total_time:10691 ms}`：RPC 请求失败后，会在等待 backoff 的时间后重试，包括了 backoff 的类型（如 regionMiss，tikvRPC），backoff 等待的总时间 (total_time) 和 backoff 的总次数 (num)。
+
+> Backoff_time：表示语句遇到需要重试的错误时在重试前等待的时间。常见的需要重试的错误有以下几种：遇到了 lock、Region 分裂、tikv server is busy。
+>
+> Backoff pattern 是一种程序设计模式，通常用于处理因高负载或故障而导致的请求失败或错误。该模式基于一种简单的策略，即当请求失败时，等待一段时间后重试，等待时间逐渐增加，直到成功或达到最大重试次数为止。
+
+### Batch_Point_Get
+
+`Batch_Point_get` 算子的执行信息和 `Point_Get` 算子类似，不过 `Batch_Point_Get` 一般向 TiKV 发送 `BatchGet` 类型的 RPC 请求来读取数据。
+
+`BatchGet:{num_rpc:2, total_time:83.13µs}`：向 TiKV 发送 `BatchGet` 类型的 RPC 请求的数量 (`num_rpc`) 和所有 RPC 请求的总耗时 (`total_time`)。
+
+### TableReader
+
+`TableReader` 算子可能包含以下执行信息：
+
+```apache
+cop_task: {num: 6, max: 1.07587ms, min: 844.312µs, avg: 919.601µs, p95: 1.07587ms, max_proc_keys: 16, p95_proc_keys: 16, tot_proc: 1ms, tot_wait: 1ms, rpc_num: 6, rpc_time: 5.313996ms, copr_cache_hit_ratio: 0.00}
+```
+
+- cop_task：包含 cop task 的相关信息，如：
+  - `num`：cop task 的数量
+  
+  - `max`,`min`,`avg`,`p95`：所有 cop task 中执行时间的最大值，最小值，平均值和 P95 值。
+  
+  - `max_proc_keys`, `p95_proc_keys`：所有 cop task 中 tikv 扫描 kv 数据的最大值，P95 值，**如果 max 和 p95 的值差距很大，说明数据分布不太均匀。**
+  
+  - `rpc_num`, `rpc_time`：向 TiKV 发送 `Cop` 类型的 RPC 请求总数量和总时间。
+  
+  - `copr_cache_hit_ratio`：cop task 请求的 Coprocessor Cache 缓存命中率。[Coprocessor Cache 配置](https://docs.pingcap.com/zh/tidb/v6.1/tidb-configuration-file)。
+  
+    > Coprocessor Cache 相关的配置项
+    >
+    > tikv-client.copr-cache 
+    >
+    > `capacity-mb`
+    >
+    > - 缓存的总数据量大小。当缓存空间满时，旧缓存条目将被逐出。值为 0.0 时表示关闭 Coprocessor Cache。
+    > - 默认值：1000.0
+    > - 单位：MB
+    > - 类型：Float
+- `backoff`：包含不同类型的 backoff 以及等待总耗时。
+
+### Insert
+
+`Insert` 算子可能包含以下执行信息：
+
+```apache
+prepare:109.616µs, check_insert:{total_time:1.431678ms, mem_insert_time:667.878µs, prefetch:763.8µs, rpc:{BatchGet:{num_rpc:1, total_time:699.166µs},Get:{num_rpc:1, total_time:378.276µs}}}
+```
+
+- `prepare`：准备写入前的耗时，包括表达式，默认值相关的计算等。
+- check_insert：这个信息一般出现在insert ignore和insert on duplicate语句中，包含冲突检查和写入 TiDB 事务缓存的耗时。注意，这个耗时不包含事务提交的耗时。具体包含以下信息：
+  - `total_time`：`check_insert` 步骤的总耗时。
+  - `mem_insert_time`：将数据写入 TiDB 事务缓存的耗时。
+  - `prefetch`：从 TiKV 中获取需要检查冲突的数据的耗时，该步骤主要是向 TiKV 发送 `BatchGet` 类型的 RPC 请求的获取数据。
+  - rpc：向 TiKV 发送 RPC 请求的总耗时，一般包含BatchGet和Get两种类型的 RPC 耗时，其中：
+    - `BatchGet` 请求是 `prefetch` 步骤发送的 RPC 请求。
+    - `Get` 请求是 `insert on duplicate` 语句在执行 `duplicate update` 时发送的 RPC 请求。
+- `backoff`：包含不同类型的 backoff 以及等待总耗时。
+
+### IndexJoin
+
+`IndexJoin` 算子有 1 个 outer worker 和 N 个 inner worker 并行执行，其 join 结果的顺序和 outer table 的顺序一致，具体执行流程如下：
+
+1. Outer worker 读取 N 行 outer table 的数据，然后包装成一个 task 发送给 result channel 和 inner worker channel。
+2. Inner worker 从 inner worker channel 里面接收 task，然后根据 task 生成需要读取 inner table 的 key ranges 范围，然后读取相应范围的 inner table 行数据，并生成一个 inner table row 的 hash table。
+3. `IndexJoin` 的主线程从 result channel 中接收 task，然后等待 inner worker 执行完这个 task。
+4. `IndexJoin` 的主线程用 outer table rows 和 inner table rows 的 hash table 做 join。
+
+`IndexJoin` 算子包含以下执行信息：
+
+```apache
+inner:{total:4.297515932s, concurrency:5, task:17, construct:97.96291ms, fetch:4.164310088s, build:35.219574ms}, probe:53.574945ms
+```
+
+- inner：inner worker 的执行信息，具体如下：
+  - `total`：inner worker 的总耗时。
+  - `concurrency`：inner worker 的数量。
+  - `task`：inner worker 处理 task 的总数量。
+  - `construct`：inner worker 读取 task 对应的 inner table rows 之前的准备时间。
+  - `fetch`：inner worker 读取 inner table rows 的总耗时。
+  - `build`: inner worker 构造 inner table rows 对应的 hash table 的总耗时。
+- `probe`：`IndexJoin` 主线程用 outer table rows 和 inner table rows 的 hash table 做 join 的总耗时。
+
+### IndexHashJoin
+
+`IndexHashJoin` 算子和 `IndexJoin` 算子执行流程类似，也有 1 个 outer worker 和 N 个 inner worker 并行执行，但是其 join 结果的顺序是不和 outer table 一致。具体执行流程如下：
+
+1. Outer worker 读取 N 行 out table 的数据，然后包装成一个 task 发送给 inner worker channel。
+2. Inner worker 从 inner worker channel 里面接收 task，然后做以下三件事情，其中步骤 a 和 b 是并行执行。 
+   - a. 用 outer table rows 生成一个 hash table。
+   -  b. 根据 task 生成 key 的范围后，读取 inner table 相应范围的行数据。
+   -  c. 用 inner table rows 和 outer table rows 的 hash table 做 join，然后把 join 结果发送给 result channel。
+3. `IndexHashJoin` 的主线程从 result channel 中接收 join 结果。
+
+`IndexHashJoin` 算子包含以下执行信息：
+
+```sql
+inner:{total:4.429220003s, concurrency:5, task:17, construct:96.207725ms, fetch:4.239324006s, build:24.567801ms, join:93.607362ms}
+```
+
+- inner：inner worker 的执行信息，具体如下：
+  - `total`：inner worker 的总耗时。
+  - `concurrency`：inner worker 的数量。
+  - `task`：inner worker 处理 task 的总数量。
+  - `construct`：inner worker 读取 task 对应的 inner table rows 之前的准备时间。
+  - `fetch`：inner worker 读取 inner table rows 的总耗时。
+  - `build`: inner worker 构造 outer table rows 对应的 hash table 的总耗时。
+  - `join`: inner worker 用 inner table rows 和 outer table rows 的 hash table 做 join 的总耗时。
+
+### HashJoin
+
+`HashJoin` 算子有一个 inner worker，一个 outer worker 和 N 个 join worker，其具体执行逻辑如下：
+
+1. inner worker 读取 inner table rows 并构造 hash table。
+2. outer worker 读取 outer table rows, 然后包装成 task 发送给 join worker。
+3. 等待第 1 步的 hash table 构造完成。
+4. join worker 用 task 里面的 outer table rows 和 hash table 做 join，然后把 join 结果发送给 result channel。
+5. `HashJoin` 的主线程从 result channel 中接收 join 结果。
+
+`HashJoin` 算子包含以下执行信息：
+
+```apache
+build_hash_table:{total:146.071334ms, fetch:110.338509ms, build:35.732825ms}, probe:{concurrency:5, total:857.162518ms, max:171.48271ms, probe:125.341665ms, fetch:731.820853ms}
+```
+
+- build_hash_table: 读取 inner table 的数据并构造 hash table 的执行信息：
+  - `total`：总耗时。
+  - `fetch`：读取 inner table 数据的总耗时。
+  - `build`：构造 hash table 的总耗时。
+- probe: join worker 的执行信息：
+  - `concurrency`：join worker 的数量。
+  - `total`：所有 join worker 执行的总耗时。
+  - `max`：单个 join worker 执行的最大耗时。
+  - `probe`: 用 outer table rows 和 hash table 做 join 的总耗时。
+  - `fetch`：join worker 等待读取 outer table rows 数据的总耗时。
+
+### lock_keys 执行信息
+
+在悲观事务中执行 DML 语句时，算子的执行信息还可能包含 `lock_keys` 的执行信息，示例如下：
+
+```apache
+lock_keys: {time:94.096168ms, region:6, keys:8, lock_rpc:274.503214ms, rpc_count:6}
+```
+
+- `time`：执行 `lock_keys` 操作的总耗时。
+- `region`：执行 `lock_keys` 操作涉及的 Region 数量。
+- `keys`：需要 `Lock` 的 `Key` 的数量。
+- `lock_rpc`：向 TiKV 发送 `Lock` 类型的 RPC 总耗时。因为可以并行发送多个 RPC 请求，所以总 RPC 耗时可能比 `lock_keys` 操作总耗时大。
+- `rpc_count`：向 TiKV 发送 `Lock` 类型的 RPC 总数量。
+
+### commit_txn 执行信息
+
+在 `autocommit=1` 的事务中执行写入类型的 DML 语句时，算子的执行信息还会包括事务提交的耗时信息，示例如下：
+
+```apache
+commit_txn: {prewrite:48.564544ms, wait_prewrite_binlog:47.821579, get_commit_ts:4.277455ms, commit:50.431774ms, region_num:7, write_keys:16, write_byte:536}
+```
+
+- `prewrite`：事务 2PC 提交阶段中 `prewrite` 阶段的耗时。
+- `wait_prewrite_binlog:`：等待写 prewrite Binlog 的耗时。
+- `get_commit_ts`：获取事务提交时间戳的耗时。
+- `commit`：事务 2PC 提交阶段中，`commit` 阶段的耗时。
+- `write_keys`：事务中写入 `key` 的数量。
+- `write_byte`：事务中写入 `key-value` 的总字节数量，单位是 byte。
+
+### 其它常见执行信息
+
+Coprocessor 算子通常包含 `cop_task` 和 `tikv_task` 两部分执行时间信息。
+
+- `cop_task` 是 TiDB 端记录的时间，从发出请求到接收回复；
+- `tikv_task` 是 TiKV Coprocessor 算子自己记录的时间。
+
+**两者相差较大可能说明在等待、gRPC 或网络上耗时较长。**
+
 # 使用Explain分析执行计划
 
 以 [bikeshare 数据库示例（英文）](https://docs.pingcap.com/tidb/stable/import-example-data) 中的一个 SQL 语句为例，该语句统计了 2017 年 7 月 1 日的行程次数：
@@ -34,11 +260,13 @@ EXPLAIN SELECT count(*) FROM trips WHERE start_date BETWEEN '2017-07-01 00:00:00
 - estRows表示TiDB预估会处理的行数；
   - 该信息可能基于字典信息（例如访问方法基于主键或唯一键），或基于CMSketch或直方图等统计信息而来；
 
-> 注意：自V6.4.0版本开始，特定算子（即IndexJoin和Apply算子的Probe端所有子节点）的estRows字段含义和以前有所不同；
+> 注意：
 >
-> 在V6.4.0版本以前，estRows表示Build端的每一行数据，Probe端预计处理的行数；
+> 自V6.4.0版本开始，特定算子（即IndexJoin和Apply算子的Probe端所有子节点）的estRows字段含义和以前有所不同；
 >
-> 而在V6.4.0开始，estRows表示的是Probe端预计会处理的所有行数；
+> - 在V6.4.0版本以前，estRows表示Build端的每一行数据，Probe端预计处理的行数；
+>
+> - 而在V6.4.0开始，estRows表示的是Probe端预计会处理的所有行数；
 >
 > 因为Explain Analyze中的actRows表示的是实际处理的总行数，V6.4.0开始这些算子的estRows的含义与actRows列的含义保持一致；
 
@@ -48,7 +276,7 @@ EXPLAIN SELECT count(*) FROM trips WHERE start_date BETWEEN '2017-07-01 00:00:00
 >
 > 如果还有TiFlash，则还有tiflash上的task；如：mpp[tiflash]、batchCop[tiflash]；
 >
-> SQL 优化的目标之一是将计算尽可能地下推到 TiKV 中执行。TiKV 中的 Coprocessor 能支持大部分 SQL 内建函数（包括聚合函数和标量函数）、SQL `LIMIT` 操作、索引扫描和表扫描。
+> SQL 优化的目标之一是**将计算尽可能地下推到 TiKV 中执行**。TiKV 中的 Coprocessor 能支持大部分 SQL 内建函数（包括聚合函数和标量函数）、SQL `LIMIT` 操作、索引扫描和表扫描。
 
 - operator info 表示显示访问表、分区和索引的其他信息、条件下推等信息；
 
@@ -124,6 +352,157 @@ TiDB 在 MySQL 的基础上，定义了一些专用的系统变量和语法用�
 - 是否允许使用分区表...
 
 这些都可以通过系统变量进行控制，从而影响各个算子执行的效率。
+
+### 索引查询的算子
+
+TiDB 支持以下使用索引的算子来提升查询速度：
+
+- [`IndexLookup`](https://docs.pingcap.com/zh/tidb/v6.1/explain-indexes#indexlookup)
+- [`IndexReader`](https://docs.pingcap.com/zh/tidb/v6.1/explain-indexes#indexreader)
+- [`Point_Get` 和 `Batch_Point_Get`](https://docs.pingcap.com/zh/tidb/v6.1/explain-indexes#point_get-和-batch_point_get)
+- [`IndexFullScan`](https://docs.pingcap.com/zh/tidb/v6.1/explain-indexes#indexfullscan)
+
+```sql
+CREATE TABLE t1 (
+ id INT NOT NULL PRIMARY KEY auto_increment,
+ intkey INT NOT NULL,
+ pad1 VARBINARY(1024),
+ INDEX (intkey)
+);
+
+INSERT INTO t1 SELECT NULL, FLOOR(RAND()*1024), RANDOM_BYTES(1024) FROM dual;
+INSERT INTO t1 SELECT NULL, FLOOR(RAND()*1024), RANDOM_BYTES(1024) FROM t1 a JOIN t1 b JOIN t1 c LIMIT 10000;
+INSERT INTO t1 SELECT NULL, FLOOR(RAND()*1024), RANDOM_BYTES(1024) FROM t1 a JOIN t1 b JOIN t1 c LIMIT 10000;
+INSERT INTO t1 SELECT NULL, FLOOR(RAND()*1024), RANDOM_BYTES(1024) FROM t1 a JOIN t1 b JOIN t1 c LIMIT 10000;
+```
+
+#### IndexLookup
+
+`IndexLookup` 算子有以下两个子节点：
+
+- `├─IndexRangeScan_8(Build)` 算子节点对 `intkey` 列的索引执行范围扫描，并检索内部的 `RowID` 值（对此表而言，即为主键）。
+  - `└─TableRowIDScan_9(Probe)` 算子节点随后从表数据中检索整行。		
+
+`IndexLookup` 任务分以上两步执行。如果满足条件的行较多，SQL 优化器可能会根据[统计信息](https://docs.pingcap.com/zh/tidb/v6.1/statistics)选择使用 `TableFullScan` 算子。
+
+TiDB 支持覆盖索引优化 (covering index optimization)。如果 TiDB 能从索引中检索出所有行，就会跳过 `IndexLookup` 任务中通常所需的第二步（即从表数据中检索整行）。示例如下：
+
+```sql
+EXPLAIN SELECT * FROM t1 WHERE intkey = 123;
+EXPLAIN SELECT id FROM t1 WHERE intkey = 123;
++-------------------------------+---------+-----------+--------------------------------+-----------------------------------+
+| id                            | estRows | task      | access object                  | operator info                     |
++-------------------------------+---------+-----------+--------------------------------+-----------------------------------+
+| IndexLookUp_10                | 1.00    | root      |                                |                                   |
+| ├─IndexRangeScan_8(Build)     | 1.00    | cop[tikv] | table:t1, index:intkey(intkey) | range:[123,123], keep order:false |
+| └─TableRowIDScan_9(Probe)     | 1.00    | cop[tikv] | table:t1                       | keep order:false                  |
++-------------------------------+---------+-----------+--------------------------------+-----------------------------------+
+3 rows in set (0.00 sec)
+
++--------------------------+---------+-----------+--------------------------------+-----------------------------------+
+| id                       | estRows | task      | access object                  | operator info                     |
++--------------------------+---------+-----------+--------------------------------+-----------------------------------+
+| Projection_4             | 1.00    | root      |                                | test.t1.id                        |
+| └─IndexReader_6          | 1.00    | root      |                                | index:IndexRangeScan_5            |
+|   └─IndexRangeScan_5     | 1.00    | cop[tikv] | table:t1, index:intkey(intkey) | range:[123,123], keep order:false |
++--------------------------+---------+-----------+--------------------------------+-----------------------------------+
+3 rows in set (0.00 sec)
+```
+
+以上结果中，**`id` 也是内部的 `RowID` 值，因此 `id` 也存储在 `intkey` 索引中**。部分 `└─IndexRangeScan_5` 任务使用 `intkey` 索引后，可直接返回 `RowID` 值。
+
+#### Point_Get 和 Batch_Point_Get
+
+TiDB 直接从主键或唯一键检索数据时会使用 `Point_Get` 或 `Batch_Point_Get` 算子。这两个算子比 `IndexLookup` 更有效率。
+
+#### IndexFullScan
+
+索引是有序的，所以优化器可以使用 `IndexFullScan` 算子（**索引数据的“全表扫描”**）来优化常见的查询。
+
+#### 有索引的MIN 和 MAX
+
+例如在索引值上使用 `MIN` 或 `Max` 函数：
+
+```sql
+EXPLAIN SELECT MIN(intkey) FROM t1;
+EXPLAIN SELECT MAX(intkey) FROM t1;
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| id                           | estRows | task      | access object                  | operator info                       |
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| StreamAgg_12                 | 1.00    | root      |                                | funcs:min(test.t1.intkey)->Column#4 |
+| └─Limit_16                   | 1.00    | root      |                                | offset:0, count:1                   |
+|   └─IndexReader_29           | 1.00    | root      |                                | index:Limit_28                      |
+|     └─Limit_28               | 1.00    | cop[tikv] |                                | offset:0, count:1                   |
+|       └─IndexFullScan_27     | 1.00    | cop[tikv] | table:t1, index:intkey(intkey) | keep order:true                     |
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+5 rows in set (0.00 sec)
+
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| id                           | estRows | task      | access object                  | operator info                       |
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| StreamAgg_12                 | 1.00    | root      |                                | funcs:max(test.t1.intkey)->Column#4 |
+| └─Limit_16                   | 1.00    | root      |                                | offset:0, count:1                   |
+|   └─IndexReader_29           | 1.00    | root      |                                | index:Limit_28                      |
+|     └─Limit_28               | 1.00    | cop[tikv] |                                | offset:0, count:1                   |
+|       └─IndexFullScan_27     | 1.00    | cop[tikv] | table:t1, index:intkey(intkey) | keep order:true, desc               |
++------------------------------+---------+-----------+--------------------------------+-------------------------------------+
+5 rows in set (0.00 sec)
+```
+
+以上语句的执行过程中，TiDB 在每一个 TiKV Region 上执行 `IndexFullScan` 操作。**虽然算子名为 `FullScan` 即全扫描，TiDB 只读取第一行 (`└─Limit_28`)**。每个 TiKV Region 返回各自的 `MIN` 或 `MAX` 值给 TiDB，TiDB 再执行流聚合运算来过滤出一行数据。即使表为空，带 `MAX` 或 `MIN` 函数的流聚合运算也能保证返回 `NULL` 值。
+
+> 当max和min可以走索引，只需读取一行即可，因为索引数据是有序的；
+
+#### 无索引的MIN 和 MAX
+
+相反，在没有索引的值上执行 `MIN` 函数会在每一个 TiKV Region 上执行 `TableFullScan` 操作。**该查询会要求在 TiKV 中扫描所有行，但 `TopN` 计算可保证每个 TiKV Region 只返回一行数据给 TiDB**。尽管 `TopN` 能减少 TiDB 和 TiKV 之间的多余数据传输，但该查询的效率仍远不及以上示例（`MIN` 能够使用索引）。
+
+```sql
+EXPLAIN SELECT MIN(pad1) FROM t1;
++--------------------------------+---------+-----------+---------------+-----------------------------------+
+| id                             | estRows | task      | access object | operator info                     |
++--------------------------------+---------+-----------+---------------+-----------------------------------+
+| StreamAgg_13                   | 1.00    | root      |               | funcs:min(test.t1.pad1)->Column#4 |
+| └─TopN_14                      | 1.00    | root      |               | test.t1.pad1, offset:0, count:1   |
+|   └─TableReader_23             | 1.00    | root      |               | data:TopN_22                      |
+|     └─TopN_22                  | 1.00    | cop[tikv] |               | test.t1.pad1, offset:0, count:1   |
+|       └─Selection_21           | 1008.99 | cop[tikv] |               | not(isnull(test.t1.pad1))         |
+|         └─TableFullScan_20     | 1010.00 | cop[tikv] | table:t1      | keep order:false                  |
++--------------------------------+---------+-----------+---------------+-----------------------------------+
+6 rows in set (0.00 sec)
+```
+
+执行以下语句时，TiDB 将使用 `IndexFullScan` 算子扫描索引中的每一行：
+
+```sql
+EXPLAIN SELECT SUM(intkey) FROM t1;
+EXPLAIN SELECT AVG(intkey) FROM t1;
++----------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| id                         | estRows | task      | access object                  | operator info                       |
++----------------------------+---------+-----------+--------------------------------+-------------------------------------+
+| StreamAgg_20               | 1.00    | root      |                                | funcs:sum(Column#6)->Column#4       |
+| └─IndexReader_21           | 1.00    | root      |                                | index:StreamAgg_8                   |
+|   └─StreamAgg_8            | 1.00    | cop[tikv] |                                | funcs:sum(test.t1.intkey)->Column#6 |
+|     └─IndexFullScan_19     | 1010.00 | cop[tikv] | table:t1, index:intkey(intkey) | keep order:false                    |
++----------------------------+---------+-----------+--------------------------------+-------------------------------------+
+4 rows in set (0.00 sec)
+
++----------------------------+---------+-----------+--------------------------------+----------------------------------------------------------------------------+
+| id                         | estRows | task      | access object                  | operator info                                                              |
++----------------------------+---------+-----------+--------------------------------+----------------------------------------------------------------------------+
+| StreamAgg_20               | 1.00    | root      |                                | funcs:avg(Column#7, Column#8)->Column#4                                    |
+| └─IndexReader_21           | 1.00    | root      |                                | index:StreamAgg_8                                                          |
+|   └─StreamAgg_8            | 1.00    | cop[tikv] |                                | funcs:count(test.t1.intkey)->Column#7, funcs:sum(test.t1.intkey)->Column#8 |
+|     └─IndexFullScan_19     | 1010.00 | cop[tikv] | table:t1, index:intkey(intkey) | keep order:false                                                           |
++----------------------------+---------+-----------+--------------------------------+----------------------------------------------------------------------------+
+4 rows in set (0.00 sec)
+```
+
+以上示例中，`IndexFullScan` 比 `TableFullScan` 更有效率，因为 `(intkey + RowID)` 索引中值的长度小于整行的长度。
+
+> （1）min()、max() 会在每个TiKV Region上执行扫描，如果字段设置了索引，则是索引扫描，否则是全表扫描， 无论是索引扫描还是全表扫描，每个TiKV Region扫描完都会返回各自Region上 的最小值或者最大值给到TiDB，然后TiDB通过流聚合运算（StreamAgg）过滤出一行数据。如果表数据为空，min() 、 max() 也能保证返回NULL值；
+>
+> （2）sum() 、avg() 是需要全表扫描的，若聚合的字段有索引，则扫描索引的每一行；若聚合的字段没有索引，则扫描全表的每一行。
 
 
 
@@ -702,13 +1081,21 @@ EXPLAIN SELECT COUNT(*) FROM t1 a JOIN t1 b ON a.id = b.id;
 ## MPP执行案例
 
 - 大量数据的 JOIN+聚合查询；
-
 - 所有MPP计算都**在TiFlash节点内存中**完成；
-
 - 目前**只支持等值连接**；
   - a left join b a.id > b.id不支持
-
 - enforce_mpp帮助验证是否可以使用MPP；如果SQL走不了MPP，则会有Warning。
+- 如果希望使用 MPP 模式访问分区表，需要先开启[动态裁剪模式](https://docs.pingcap.com/zh/tidb/v6.1/partitioned-table#动态裁剪模式)。
+
+TiDB 访问分区表有两种模式，`dynamic` 和 `static`，目前默认使用 `static` 模式。如果想开启 `dynamic` 模式，需要手动将 `tidb_partition_prune_mode` 设置为 `dynamic`。
+
+```sql
+set @@session.tidb_partition_prune_mode = 'dynamic'
+```
+
+普通查询和手动 analyze 使用的是 session 级别的 `tidb_partition_prune_mode` 设置，后台的 auto-analyze 使用的是 global 级别的 `tidb_partition_prune_mode` 设置。
+
+静态裁剪模式下，分区表使用的是分区级别的统计信息，而动态裁剪模式下，分区表用的是表级别的汇总统计信息，即 GlobalStats。详见[动态裁剪模式下的分区表统计信息](https://docs.pingcap.com/zh/tidb/v6.1/statistics#动态裁剪模式下的分区表统计信息)。
 
 ![image](1-TiDB Explain执行计划.assets/image.png)
 
@@ -802,7 +1189,10 @@ MySQL [(none)]> SELECT ID, USER, INSTANCE, INFO FROM INFORMATION_SCHEMA.CLUSTER_
 比如要终止 Job ID为5857102839209263511，则执行如下语句即可：
 
 ```shell
+# 在当前连接的TiDB实例上终止Job
 KILL 7119711623803044261;
+# 在TiDB集群的所有实例上终止Job
+KILL TIDB 7119711623803044261;
 ```
 
 执行结果如下：
