@@ -1980,6 +1980,20 @@ TiDB使用的是等深直方图，而不是等宽直方图。
 
 注意：**在high space里面不考虑剩余空间，在low space里面需要着重考虑剩余空间。**
 
+磁盘存储空间不够的影响
+
+1、剩余存储空间过少，如果数据增长量过快，维护操作窗口时间会被压缩，影响业务稳定性；
+2、存储空间使用率过高IO性能会下降；
+3、存储空间阈值影响PD调度:https://docs.pingcap.com/zh/tidb/v6.5/pd-configuration-file
+a、high-space-ratio 默认值：0.7
+设置 store 空间充裕的阈值。当节点的空间占用比例小于该阈值时，PD 调度时会忽略节点的剩余空间，主要根据实际数据量进行均衡。此配置仅在region-score-formula-version = v1 时生效。
+b、low-space-ratio 默认值：0.8
+设置 store 空间不足的阈值。当某个节点的空间占用比例超过该阈值时，PD会尽可能避免往该节点迁移数据，同时主要根据节点剩余空间大小进行调度，避免对应节点的磁盘空间被耗尽。
+
+![image](1-TiDB性能优化.assets/2d30725e6c7090881d107e25a81181d3cc41498c.png)
+
+参考：https://asktug.com/t/topic/1022385/24
+
 ## 其他参数
 
 ![image-20240122221346838](1-TiDB性能优化.assets/image-20240122221346838.png)
@@ -2604,4 +2618,11 @@ select @@global.tidb_enable_cluster_index;
 
 
 - 非聚簇表如果在 where 条件中用主键过滤，也会回表；
-- 
+
+
+
+# TiDB SQL优化原则和思路
+
+1、查询效率，一般而言：主键查询>覆盖索引（不回表）>索引回表查>全表扫描；
+
+2、
