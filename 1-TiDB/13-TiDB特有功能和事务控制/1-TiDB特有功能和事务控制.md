@@ -419,3 +419,112 @@ name 和 discover_date 两个列共同组成了一个复合主键。
 ## 放置规则约束
 
 ![image-20240424123344162](1-TiDB特有功能和事务控制.assets/image-20240424123344162.png)
+
+## TiFlash
+
+### TiFlash主要特点
+
+![image-20240424123949232](1-TiDB特有功能和事务控制.assets/image-20240424123949232.png)
+
+### 引擎智能选择
+
+![image-20240424124201129](1-TiDB特有功能和事务控制.assets/image-20240424124201129.png)
+
+
+
+## TRUNCATE 语句
+
+- 语法: `TRUNCATE [TABLE] table_name`
+- TRUNCATE TABLE 语句将删除表中所有的行
+- 它重置 AUTO_INCREMENT 为起始值
+- **不像 DELETE，它是 DDL，不是 DML，意味着它不能加入事务用，不能被 ROLLBACK**
+- **等同于按次序执行: `DROP TABLE`, `CREATE TABLE`**
+- 可能可以使用 FLASHBACK TABLE 撤销
+
+------
+
+TRUNCATE 语句以非事务方式从表中删除所有数据。可认为 TRUNCATE 语句同 DROP TABLE + CREATE TABLE 组合在语义上相同。
+
+有关事务的详细知识我们会在后续章节中讲解。
+
+TRUNCATE TABLE table_name 和 TRUNCATE table_name 均为有效语法。
+
+## 事务
+
+### 事务概览
+
+![image-20240424222607343](1-TiDB特有功能和事务控制.assets/image-20240424222607343.png)
+
+### 事务自动提交模式
+
+![image-20240424222947343](1-TiDB特有功能和事务控制.assets/image-20240424222947343.png)
+
+### 事务控制语句
+
+![image-20240424223118369](1-TiDB特有功能和事务控制.assets/image-20240424223118369.png)
+
+
+
+### 隐式COMMIT
+
+![image-20240424223146584](1-TiDB特有功能和事务控制.assets/image-20240424223146584.png)
+
+**DESC、EXPLAIN、ANALYZE会使得前面设置手动提交的事务隐式提交吗？**
+
+### 因果一致性的事务
+
+![image-20240424223559842](1-TiDB特有功能和事务控制.assets/image-20240424223559842.png)
+
+### 事务和并发
+
+![image-20240424224025924](1-TiDB特有功能和事务控制.assets/image-20240424224025924.png)
+
+![image-20240424224236172](1-TiDB特有功能和事务控制.assets/image-20240424224236172.png)
+
+![image-20240424224340350](1-TiDB特有功能和事务控制.assets/image-20240424224340350.png)
+
+
+
+![image-20240424224508733](1-TiDB特有功能和事务控制.assets/image-20240424224508733.png)
+
+### TiDB事务隔离级别
+
+![image-20240424224557795](1-TiDB特有功能和事务控制.assets/image-20240424224557795.png)
+
+### 切换事务模式
+
+
+
+![image-20240424224948335](1-TiDB特有功能和事务控制.assets/image-20240424224948335.png)
+
+
+
+## 预编译语句（Prepared Statement）
+
+### 动态语句和SQL注射
+
+![image-20240425121717676](1-TiDB特有功能和事务控制.assets/image-20240425121717676.png)
+
+### Prepared Statement
+
+![image-20240425122119696](1-TiDB特有功能和事务控制.assets/image-20240425122119696.png)
+
+## Connector/J
+
+![image-20240427152710392](1-TiDB特有功能和事务控制.assets/image-20240427152710392.png)
+
+### 安装Connector/J
+
+![image-20240427152747177](1-TiDB特有功能和事务控制.assets/image-20240427152747177.png)
+
+### 使用Connector/J 连接到 TiDB
+
+![image-20240427152827294](1-TiDB特有功能和事务控制.assets/image-20240427152827294.png)
+
+### 获取Connector/J 连接对象
+
+![image-20240427152900482](1-TiDB特有功能和事务控制.assets/image-20240427152900482.png)
+
+### 断开与TIDB服务器实例的连接
+
+![image-20240427152936305](1-TiDB特有功能和事务控制.assets/image-20240427152936305.png)
